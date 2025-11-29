@@ -1,0 +1,5 @@
+numpy
+pandas
+
+#-e . # Automatically install the setup.py file 
+     # ie. python setup.py install
