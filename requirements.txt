@@ -1,5 +1,9 @@
 numpy
 pandas
+psycopg2
+python-dotenv
+scikit-learn
+
 
 #-e . # Automatically install the setup.py file 
      # ie. python setup.py install
