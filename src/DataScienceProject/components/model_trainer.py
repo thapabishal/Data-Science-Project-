@@ -10,15 +10,17 @@ from sklearn.ensemble import (
 )
 
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from xgboost import XGBRegressor
-
+from urllib.parse import urlparse
 from src.DataScienceProject.exception import CustomException
 from src.DataScienceProject.logger import logging
 from src.DataScienceProject.utils import evaluate_models, save_object
 import mlflow
+
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+import numpy as np 
 
 
 @dataclass
@@ -29,6 +31,14 @@ class ModelTrainerConfig:
 class ModelTrainer:
     def __init__(self):
         self.model_trainer_config = ModelTrainerConfig()
+
+    def eval_metrics(self, actual, pred):
+        """Calculate RMSE, MAE, and R2."""
+        mse = mean_squared_error(actual, pred)  # always returns MSE
+        rmse = np.sqrt(mse)  # take square root manually
+        mae = mean_absolute_error(actual, pred)
+        r2 = r2_score(actual, pred)
+        return rmse, mae, r2
 
     def initiate_model_trainer(self, train_array, test_array):
         try:
@@ -107,7 +117,7 @@ class ModelTrainer:
             )
 
             ## To get best model score from dict
-            best_model_score = max(sorted(model_report.values()))
+            best_model_score = max(model_report.values())
 
             ## To get best model name from dict
 
@@ -116,7 +126,9 @@ class ModelTrainer:
             ]
             best_model = models[best_model_name]
 
-            print(f"Best model is : {best_model_name} with r2 score: {best_model_score}")
+            print(
+                f"Best model is : {best_model_name} with r2 score: {best_model_score}"
+            )
 
             model_names = list(params.keys())
 
@@ -128,12 +140,22 @@ class ModelTrainer:
 
             best_params = params[actual_model]
 
-            # mlflow.set_registry_url(
-            #     "https://dagshub.com/thapabishal/Data-Science-Project-.mlflow"
-            # )
-            # tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+            mlflow.set_tracking_uri("https://dagshub.com/thapabishal/Data-Science-Project.mlflow")
 
-            # # mlflow tuning done here
+            # tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+            mlflow.autolog()
+            # Train the best model
+            best_model.fit(X_train, y_train)
+
+            # Evaluate
+            predicted = best_model.predict(X_test)
+            rmse, mae, r2 = self.eval_metrics(y_test, predicted)
+
+            # Log custom metrics (optional, because autolog won’t do RMSE/MAE)
+            mlflow.log_metric("rmse", rmse)
+            mlflow.log_metric("mae", mae)
+            mlflow.log_metric("r2", r2)
+            # mlflow tuning done here
             # with mlflow.start_run():
             #     predicted_qualities = best_model.predict(X_test)
             #     (rmse, mae, r2) = self.eval_metrics(y_test, predicted_qualities)
@@ -150,7 +172,7 @@ class ModelTrainer:
             #     # There are other ways to use the Model Registry, which depends on the
             #     # please refer to the doc for more information:
             #     # https://mlflow.org/docs/latest/model-registry.html#api-workflow
-            #     mlflow.sklearn.logl_model(
+            #     mlflow.sklearn.log_model(
             #         best_model, "model", registered_model_name=actual_model
             #     )
             # else:

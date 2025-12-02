@@ -6,8 +6,8 @@ from src.DataScienceProject.components.data_transformation import DataTransforma
 from src.DataScienceProject.components.model_trainer import ModelTrainer, ModelTrainerConfig
 
 
-# import dagshub
-# dagshub.init(repo_owner='thapabishal', repo_name='Data-Science-Project')
+import dagshub
+dagshub.init(repo_owner='thapabishal', repo_name='Data-Science-Project-', mlflow=True)
 
 
 if __name__ == "__main__":
