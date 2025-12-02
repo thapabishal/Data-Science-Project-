@@ -22,7 +22,11 @@ class DataIngestion:
     def initiate_data_ingestion(self):
         try:
             logging.info("Data Ingestion function called")
-            df = read_sql_data()
+            ## data ingestion portion code
+            # df = read_sql_data()
+
+            ##datatransformation portion code
+            df= pd.read_csv(os.path.join('notebook/data', "raw_data.csv"))
             logging.info("Reading completed from PostgreSQL database")
 
             # Ensure artifacts folder exists

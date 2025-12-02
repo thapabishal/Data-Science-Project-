@@ -1,9 +1,13 @@
 numpy
 pandas
+seaborn
+matplotlib
 psycopg2
 python-dotenv
 scikit-learn
 
-
+ipykernel
+catboost
+xgboost
 #-e . # Automatically install the setup.py file 
      # ie. python setup.py install
