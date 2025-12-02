@@ -6,8 +6,12 @@ psycopg2
 python-dotenv
 scikit-learn
 
-ipykernel
+
 catboost
 xgboost
+
+Flask
+dill
+mlflow==2.2.2
 #-e . # Automatically install the setup.py file 
      # ie. python setup.py install
