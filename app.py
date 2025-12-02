@@ -5,6 +5,11 @@ import sys
 from src.DataScienceProject.components.data_transformation import DataTransformation, DataTransformationConfig
 from src.DataScienceProject.components.model_trainer import ModelTrainer, ModelTrainerConfig
 
+
+# import dagshub
+# dagshub.init(repo_owner='thapabishal', repo_name='Data-Science-Project')
+
+
 if __name__ == "__main__":
     logging.info("The execution has started")
 

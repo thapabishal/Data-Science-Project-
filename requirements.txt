@@ -12,6 +12,7 @@ xgboost
 
 Flask
 dill
-mlflow==2.2.2
+mlflow
+mlflow-dagshub
 #-e . # Automatically install the setup.py file 
      # ie. python setup.py install
